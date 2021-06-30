@@ -105,7 +105,7 @@ app.layout = html.Div([
         value='iHWShub',
 	multi=False),
     dcc.Graph(id='live-graph', animate=False),
-    dcc.Interval(id='graph-update',interval=500,n_intervals=0),])
+    dcc.Interval(id='graph-update',interval=1000,n_intervals=0),])
 
 #Callback for the graph, takes the intervals and the signal name as in input
 #and plots the graph according to the requested signal
