@@ -146,7 +146,7 @@ def update_graph_scatter(n,signal_name):
                     )
         
     #Return the ten different graphs with the adjust-setting for the graph, title etc.
-    return {'data': [datax[0],datax[1],datax[2]],#[datax[0],datax[1],datax[2],datax[3],datax[4],datax[5],datax[6],datax[7],datax[8],datax[9]],
+    return {'data': [datax[0],datax[1],datax[2],datax[3],datax[4],datax[5],datax[6],datax[7],datax[8],datax[9]],
             'layout' : go.Layout(
                                 #Axisx adjust just according to the last 200 values, after 200 values they start going
                                 #out of the view
@@ -171,7 +171,7 @@ def update_graph_scatter(n,signal_name):
                                 #width = 1900,
                                 #Margins for good visualisation of the texts
                                 margin={'l':100,'r':1,'t':100,'b':50},
-                                xaxis = dict(range=[min(timestamps[-20:]),max(timestamps[-20:])],
+                                xaxis = dict(range=[min(timestamps[-30:]),max(timestamps[-30:])],
                                              rangeselector = dict(buttons=list([
                                                                 dict(count=30,
                                                                      label="30s",
