@@ -129,8 +129,8 @@ def update_graph_scatter(n,signal_name):
 
 
     #Create the graphs for the 10 different signals
-    datax = [0 for i in range(10)]
-    for i in range(10):
+    datax = [0 for i in range(3)]
+    for i in range(3):
         datax[i] =  plotly.graph_objs.Scatter(
                     #Signal-Information to plot in the X axis
                     x=list(timestamps),
@@ -146,7 +146,7 @@ def update_graph_scatter(n,signal_name):
                     )
         
     #Return the ten different graphs with the adjust-setting for the graph, title etc.
-    return {'data': [datax[0],datax[1],datax[2],datax[3],datax[4],datax[5],datax[6],datax[7],datax[8],datax[9]],
+    return {'data': [datax[0],datax[1],datax[2]],#datax[3],datax[4],datax[5],datax[6],datax[7],datax[8],datax[9]],
             'layout' : go.Layout(
                                 #Axisx adjust just according to the last 200 values, after 200 values they start going
                                 #out of the view
