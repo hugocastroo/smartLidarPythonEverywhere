@@ -16,6 +16,9 @@ from pydrive.drive import GoogleDrive
 gauth = GoogleAuth()           
 drive = GoogleDrive(gauth)
 
+refreshInterval = 1000
+elementsLimits = 150
+
 #Initializinh the variables for storing the signals from the Lidar
 #Empty array of 10 arrays for the information slices
 timestamps = []
@@ -82,6 +85,11 @@ def update_signals(timestamps,tilt,roll,radialWS,verticalWV,recrotWS,turbulenceI
             for k in range(10):
                 data_signals[k].append(data_signals[k][-1]+data_signals[k][-1]*random.uniform(-0.01,0.01))
 
+    #Fix the length of the variables to max 300 units
+    for data_signals in [tilt, roll, radialWS, verticalWV, recrotWS, turbulenceI, horWShub, windDirHH, verticalWS, horizontalWS, cnr,]:
+        for j in range(10):
+            data_signals[j] = data_signals[j][-elementsLimits:]
+
     return timestamps,tilt,roll,radialWS,verticalWV,recrotWS,turbulenceI,horWShub,windDirHH,verticalWS,horizontalWS,cnr
 
 #Call the function and generate the data
@@ -104,16 +112,24 @@ app.layout = html.Div([
         options=[{'label': i, 'value': i} for i in data_signals.keys()],
         value='iHWShub',
 	multi=False),
-    dcc.Graph(id='live-graph', animate=False),
-    dcc.Interval(id='graph-update',interval=1000,n_intervals=0),])
+    dcc.Graph(id='live-graph', animate=True),
+    dcc.Interval(id='graph-update',interval=refreshInterval,n_intervals=0),
+    dcc.Checklist(id="liveUpdate",
+    options=[
+        {'label': 'Live', 'value': "on"}
+    ],
+    value=["on"],
+    labelStyle={'display': 'inline-block'}
+)] )
 
 #Callback for the graph, takes the intervals and the signal name as in input
 #and plots the graph according to the requested signal
 @app.callback(Output('live-graph', 'figure'),
              [Input('graph-update', 'n_intervals'),
-              Input('signalName','value')])
+              Input('signalName','value'),
+              Input("liveUpdate","value")])
 
-def update_graph_scatter(n,signal_name):
+def update_graph_scatter(n,signal_name,state):
     #Commands for calling the google drive and storing the file
     #xx = drive.ListFile({'q': "'1Bz1vycp82bOQxKUfvE8uKvefaMIjFKAw' in parents and trashed=false"}).GetList()
     #testID = xx[0]["id"]
@@ -123,77 +139,75 @@ def update_graph_scatter(n,signal_name):
     #Y.append(float(fileTest.GetContentString()[-32:-28]))
     #X.append(X[-1]+1)
     #Y.append(Y[-1] + Y[-1]*random.uniform(-0.01,0.01))
-
     #Update the signals information
     update_signals(timestamps,tilt,roll,radialWS,verticalWV,recrotWS,turbulenceI,horWShub,windDirHH,verticalWS,horizontalWS,cnr)
 
-
-    #Create the graphs for the 10 different signals
-    datax = [0 for i in range(3)]
-    for i in range(3):
-        datax[i] =  plotly.graph_objs.Scatter(
-                    #Signal-Information to plot in the X axis
-                    x=list(timestamps),
-                    #Signal-Information to plot in the Y axis
-                    y=list(data_signals[signal_name][i]),
-                    #Name for the signal-points when hovering over the points
-                    name= signal_name + " " + str(data_distances[i]) + " meters",
-                    mode= 'lines+markers',
-                    #Activates the legend in the screen and the description to the legend
-                    showlegend = True,
-                    text = signal_name + " " + str(data_distances[i]) + " meters",
-                    
-                    )
-        
-    #Return the ten different graphs with the adjust-setting for the graph, title etc.
-    return {'data': [datax[0],datax[1],datax[2]],#datax[3],datax[4],datax[5],datax[6],datax[7],datax[8],datax[9]],
-            'layout' : go.Layout(
-                                #Axisx adjust just according to the last 200 values, after 200 values they start going
-                                #out of the view
-                                #xaxis=dict(range=[min(timestamps[-20:]),max(timestamps[-20:])]),
-                                #If yaxis is not declared, then the axis adjusts automatically
-                                #yaxis=dict(range=[min(data_signals[signal_name])-0.5,((max(data_signals[signal_name])+20)/2)+0.5]),
-                                title = {
-                                    'text': "Live " + signal_name,
-                                    'x':0.45,
-                                    'xanchor': 'center',
-                                    'yanchor': 'top'},
-                                font=dict(
-                                    family="Courier New, monospace",
-                                    size=18,
-                                    color="RebeccaPurple"),
-                                xaxis_title = "time",
-                                yaxis_title = str(signal_name + data_units[signal_name]) ,
-                                #Size for the graph, if not specified it is actually to small,
-                                #the width adjusted aumatically now, but the height is set to 800, because if not
-                                #the graph is to small in the Y axis
-                                height = 800,
-                                #width = 1900,
-                                #Margins for good visualisation of the texts
-                                margin={'l':100,'r':1,'t':100,'b':50},
-                                xaxis = dict(range=[min(timestamps[-30:]),max(timestamps[-30:])],
-                                             rangeselector = dict(buttons=list([
-                                                                dict(count=30,
-                                                                     label="30s",
-                                                                     step="second",
-                                                                     stepmode="backward"),
-                                                                dict(count=60,
-                                                                     label="60s",
-                                                                     step="second",
-                                                                     stepmode="backward"),
-                                                                dict(count=120,
-                                                                     label="120s",
-                                                                     step="second",
-                                                                     stepmode="todate"),
-                                                                dict(count=240,
-                                                                     label="240s",
-                                                                     step="second",
-                                                                     stepmode="backward"),
-                                                                dict(step="all")])),
-                                rangeslider=dict(visible=True),
-                                type = "date"
-                                ))
-            }
+    if(len(state) == 0):
+        return null
+    else:
+        #Create the graphs for the 10 different signals
+        datax = [0 for i in range(10)]
+        for i in range(10):
+            datax[i] =  plotly.graph_objs.Scatter(
+                        #Signal-Information to plot in the X axis
+                        x=list(timestamps[-elementsLimits:]),
+                        #Signal-Information to plot in the Y axis
+                        y=list(data_signals[signal_name][i]),
+                        #Name for the signal-points when hovering over the points
+                        name= signal_name + " " + str(data_distances[i]) + " meters",
+                        mode= 'lines+markers',
+                        #Activates the legend in the screen and the description to the legend
+                        showlegend = True,
+                        text = signal_name + " " + str(data_distances[i]) + " meters",
+                        
+                        )
+            
+        #Return the ten different graphs with the adjust-setting for the graph, title etc.
+        return {'data': [datax[0],datax[1],datax[2],datax[3],datax[4],datax[5],datax[6],datax[7],datax[8],datax[9]],
+                'layout' : go.Layout(
+                                    #Axisx adjust just according to the last 200 values, after 200 values they start going
+                                    #out of the view
+                                    #xaxis=dict(range=[min(timestamps[-20:]),max(timestamps[-20:])]),
+                                    #If yaxis is not declared, then the axis adjusts automatically
+                                    #yaxis=dict(range=[min(data_signals[signal_name])-0.5,((max(data_signals[signal_name])+20)/2)+0.5]),
+                                    title = {
+                                        'text': "Live " + signal_name,
+                                        'x':0.45,
+                                        'xanchor': 'center',
+                                        'yanchor': 'top'},
+                                    font=dict(
+                                        family="Courier New, monospace",
+                                        size=18,
+                                        color="RebeccaPurple"),
+                                    xaxis_title = "time",
+                                    yaxis_title = str(signal_name + data_units[signal_name]) ,
+                                    #Size for the graph, if not specified it is actually to small,
+                                    #the width adjusted aumatically now, but the height is set to 800, because if not
+                                    #the graph is to small in the Y axis
+                                    height = 800,
+                                    #width = 1900,
+                                    #Margins for good visualisation of the texts
+                                    margin={'l':100,'r':1,'t':100,'b':50},
+                                    xaxis = dict(range=[min(timestamps[-30:]),max(timestamps[-30:])],
+                                                 rangeselector = dict(buttons=list([
+                                                                    dict(count=30,
+                                                                         label="30s",
+                                                                         step="second",
+                                                                         stepmode="backward"),
+                                                                    dict(count=60,
+                                                                         label="60s",
+                                                                         step="second",
+                                                                         stepmode="backward"),
+                                                                    dict(count=120,
+                                                                         label="120s",
+                                                                         step="second",
+                                                                         stepmode="todate")])),
+                                    rangeslider=dict(autorange=True,
+                                                     visible=True,
+                                                     range=[min(timestamps[-elementsLimits:]),max(timestamps[-elementsLimits:])]),
+                                    type = "date"
+                                    ))
+                }
 
 if __name__ == '__main__':
     app.run_server(debug=False)
