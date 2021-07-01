@@ -112,7 +112,7 @@ app.layout = html.Div([
         options=[{'label': i, 'value': i} for i in data_signals.keys()],
         value='iHWShub',
 	multi=False),
-    dcc.Graph(id='live-graph', animate=True),
+    dcc.Graph(id='live-graph', animate=False),
     dcc.Interval(id='graph-update',interval=refreshInterval,n_intervals=0),
     dcc.Checklist(id="liveUpdate",
     options=[
@@ -123,7 +123,7 @@ app.layout = html.Div([
 )] )
 
 #Callback for the graph, takes the intervals and the signal name as in input
-#and plots the graph according to the requested signal
+#and plots the graph according to the requested signal, check box for live update signal
 @app.callback(Output('live-graph', 'figure'),
              [Input('graph-update', 'n_intervals'),
               Input('signalName','value'),
