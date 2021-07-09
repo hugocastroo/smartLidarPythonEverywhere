@@ -1,6 +1,7 @@
 client_config_backend: settings
 client_config:
-  client_id: 597234382445-0588hb3fl4v4vvhegouj180cm11q6qgd.apps.googleusercontent.com
+  client_email: smartlidarmolas@temperaturesensor-311610.iam.gserviceaccount.com
+  client_id: "116467094644075890084"
   client_secret: gNIDrrzQJpokj9nxwRmgKSse
 
 save_credentials: True

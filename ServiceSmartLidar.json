@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "temperaturesensor-311610",
+  "private_key_id": "938cfcd8e64b4aa4450e12ffd757b91a1a1adaa2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCmE9egCiiMQ4dl\nsUs2MsZkYLA2Tpxo8cRG41N5UZt/kgxMUHo01P49ilyROQGaeQqOo65hcrPw1iV2\ngq9EGbuTvINbth2KadRDqFP3bUgfdaDWxbCtFAZEoqfSnn4nvtoFhKpAASdJnEkg\nuGHy6zOjaNRsP29ybVYgpYVw0yWBXu+tMfNv+CD6VSdvvIFTMFMOq7tyb5afUk2d\n8UW8iRgt1KkOK4C8WKVlMIZZACEiscqxiyXPCgC7varRtvc+Z4SJE+7aL35zYqlF\n6f6p/7uR2zd3lsHYTsfxkgcZusd7MlHOe3cvzXBopEVkfXHkugfHddfRdkFruDet\nwFX1heRpAgMBAAECggEAGxbtexttFcQGF95diE+r8L+cvp8AAFY/T9jQyt824A4w\nl1ohNPDxL5ScGMwVqN7JjA7C6P5Ov6AOqFAUyqTv5d9ABfukwekVSJvyZk+bDhaf\nz6ibcv/rLdLiUQatSUpmQbQsGRiXEfi+LOomf/tBhwwYajfGtAGFpPma1JZ8baeM\n+LAp2WiDNq929C5sNY84zusbAz/pn4QQFoJylCgMsSMsQRQIKhagWn4qqu5w+aNS\nm10HHu3RNZrFwOZ+5tEuYkhgHm61y4YOjOyDLOXeVXAUH+EfkMw3Aza2dg5M+zX6\nSjhP//wKUkPuTXFTDN+GUZTZxZP/8CBx9MSfKtaAqQKBgQDnDvW1PeOGeA2gHdvm\n1UIfTBRmlLzgldrXL7UOz63hG/wjVGXT9qOB6ssCaOxhInwYn/+nYhs8AKmCHaP4\niw72ex6+F23awexv/8nOKLve0t8Q8lcq7nxv60hYxs5viiCF0USEjNtcojz9p3uS\nc6pDqlF7OAIfjh/WZV3Ug1tKvwKBgQC4ATUkPyWv7/F4MYPedKcFZOj+mSNKt6tL\ndHLihPTd3EEXm8hsTWx4j6ZKMp/9TghI+FAXmHJt3NhmsAuHK6ggxTwQ19u8pBpD\nWzjaZ0fnZTgsdeRcxTwmIaR/gwooTDDw0NlnNNVhdClKSrC5+5vUwUBAkgkM1imM\naETobwNi1wKBgHhPzNdD0454QrgF9DQdBWIgjlrfxf23ag00dTWyJBscJE0NLDyT\np44FgRHPKo5lk3KLFWbF6eJzgdATuQa4+eCUOWzH7FbFNWUYLq+ffDvJV4eOeJ8N\nMVRhkflQA7wGk2q6jc/rPGnevJ1jsS+P9K9pJyZfApQFwEQ14ga/IzEnAoGAQADL\nh0wfw87mYzR19g8Fea7cDJMf34F7p8ddnsU4l2NhkOCzGljj/huZb/2kAOv/ncIh\nudNhGi3TaAScPexFkwCIICO1XyyFpiA46l86d5aRr4ViZZKFlY3mNiRSiCnYbCt5\nM5kBD+Dj69+HEWofjiWaP9uMIlbsJNawAVl8CAkCgYAhMJUDxqmb+MEydnoMwO7z\nNRZNCAytVTM8uQHe8fvZiHnfuG3iOTlq+EUefKC/Bz36bw8U3QG4GtDhqUNDQnnc\nnJSwYRaz4Y/fSOuiF5dzV7EF4nMmcZ5vPZA8EMlGCnK9Hm/eR2btoxPYjDmoFAtw\ntyiJlY82ZkT//KkbfPiNzg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "smartlidarmolas@temperaturesensor-311610.iam.gserviceaccount.com",
+  "client_id": "116467094644075890084",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/smartlidarmolas%40temperaturesensor-311610.iam.gserviceaccount.com"
+}

@@ -1,6 +1,7 @@
 from dash.dependencies import Output, Input
 from collections import deque
 from pydrive.auth import GoogleAuth
+from pydrive.auth import ServiceAccountCredentials
 from pydrive.drive import GoogleDrive
 from struct import *
 import dash_core_components as dcc
@@ -15,8 +16,11 @@ import dash
 import math
 
 #Authorization Headers for importing the information to/from googleDrive
-gauth = GoogleAuth()           
+gauth = GoogleAuth()
+scope = ['https://www.googleapis.com/auth/drive']
+gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name("ServiceSmartLidar.json", scope)
 drive = GoogleDrive(gauth)
+
 
 #Timeinterval for getting the information and refreshing the graph in ms
 refreshInterval = 10000
