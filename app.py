@@ -18,7 +18,7 @@ import math
 #Authorization Headers for importing the information to/from googleDrive
 gauth = GoogleAuth()
 scope = ['https://www.googleapis.com/auth/drive']
-gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name("ServiceSmartLidar.json", scope)
+gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name("./ServiceSmartLidar.json", scope)
 drive = GoogleDrive(gauth)
 
 
