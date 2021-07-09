@@ -146,11 +146,11 @@ def update_signals(timestamps,tilt,roll,radialWS,verticalWV,recrotWS,turbulenceI
     iHWShubstatus = unpack('H',info[218:220])[0]
     iDirHubstatus = unpack('H',info[220:222])[0]
     iLOS = unpack('B',info[222:223])[0]
-    print(iRWSstatus)
-    iRWSstatus = 46
-    print(iRWSstatus)
-    print(bin(iRWSstatus))
-    print(len(bin(iRWSstatus)))
+##    print(iRWSstatus)
+##    iRWSstatus = 46
+##    print(iRWSstatus)
+##    print(bin(iRWSstatus))
+##    print(len(bin(iRWSstatus)))
     #Unpacking for the slices
     for i in range(10):
         iD[i] = (unpack('h',info[12+(i*2):14+(i*2)])[0])/10
@@ -204,10 +204,6 @@ app.layout = html.Div([
 	multi=False),
 
     dcc.Graph(id='live-graph', animate=False),
-    dcc.Input(
-            id="input_interval", type="number", placeholder="interval",value = 10,
-            min=10, max=elementsLimits,
-        ),
     dcc.Interval(id='graph-update',interval=refreshInterval,n_intervals=0),
     dcc.Checklist(id="liveUpdate",
     options=[
@@ -224,10 +220,9 @@ app.layout = html.Div([
 @app.callback(Output('live-graph', 'figure'),
              [Input('graph-update', 'n_intervals'),
               Input('signalName','value'),
-              Input("liveUpdate","value"),
-              Input("input_interval","value")])
+              Input("liveUpdate","value")])
 
-def update_graph_scatter(n,signal_name,state,inputInterval):
+def update_graph_scatter(n,signal_name,state):
     #Commands for calling the google drive and storing the file
     #xx = drive.ListFile({'q': "'1Bz1vycp82bOQxKUfvE8uKvefaMIjFKAw' in parents and trashed=false"}).GetList()
     #testID = xx[0]["id"]
@@ -362,10 +357,6 @@ def update_graph_scatter(n,signal_name,state,inputInterval):
                                                                              stepmode="backward"),
                                                                         dict(count=120*(refreshInterval/1000),
                                                                              label="120",
-                                                                             step="second",
-                                                                             stepmode="backward"),
-                                                                        dict(count=int(inputInterval)*(refreshInterval/1000),
-                                                                             label="SetInterval",
                                                                              step="second",
                                                                              stepmode="backward")])),
                                         rangeslider=dict(autorange=True,
