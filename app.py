@@ -18,7 +18,10 @@ import math
 #Authorization Headers for importing the information to/from googleDrive
 gauth = GoogleAuth()
 scope = ['https://www.googleapis.com/auth/drive']
+#Running in the PC
 gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name("./ServiceSmartLidar.json", scope)
+#Pythonanywhere
+#gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name("/home/hugocastro/smartLidarPythonEverywhere/ServiceSmartLidar.json", scope)
 drive = GoogleDrive(gauth)
 
 
@@ -32,6 +35,7 @@ elementsLimits = 120
 timestamps = []
 tilt = [] #they are not slices, and have just one signal
 roll = [] #they are not slices, and have just one signal
+data_distancesTest = [None] * 10
 radialWS = [[] for i in range(10)]
 verticalWV = [[] for i in range(10)]
 recrotWS = [[] for i in range(10)]
@@ -41,7 +45,6 @@ windDirHH = [[] for i in range(10)]
 verticalWS = [[] for i in range(10)]
 horizontalWS = [[] for i in range(10)]
 cnr = [[] for i in range(10)]
-data_distancesTest = [None] * 10
 
 #Dictionary for the sifnals
 data_signals = {'Tilt': tilt,
@@ -73,7 +76,6 @@ def select_signal(signal):
         return(True)
     else:
         return (False)
-    
 
 #Function to update(add) signals information to the variables
 def update_signals(timestamps,tilt,roll,radialWS,verticalWV,recrotWS,turbulenceI,horWShub,windDirHH,verticalWS,horizontalWS,cnr):
@@ -111,8 +113,12 @@ def update_signals(timestamps,tilt,roll,radialWS,verticalWV,recrotWS,turbulenceI
 ##    print(len(x))
     testID = x[0]["id"]
     fileTest = drive.CreateFile({"id":testID})
+    ##ANSI for running in Windows@##############
     test = (fileTest.GetContentString(encoding='ANSI')[-225:])
     info = bytearray(test,encoding='ANSI')
+    ########Latin-1 for pythonanywhere###################
+    #test = (fileTest.GetContentString(encoding='latin-1')[-225:])
+    #info = bytearray(test,encoding='latin-1')
 #####################################Getting the data from a file in the PC##############################################
 ####    info = bytearray(b'')
 ####    with open("c:\\Users\\huggo\\source\\repos\\MolasDLLDemo1-1\\MolasDLLDemo1-1\\bin\\Debug\\netcoreapp3.1\\csvexample.txt", "rb") as f:
@@ -150,11 +156,44 @@ def update_signals(timestamps,tilt,roll,radialWS,verticalWV,recrotWS,turbulenceI
     iHWShubstatus = unpack('H',info[218:220])[0]
     iDirHubstatus = unpack('H',info[220:222])[0]
     iLOS = unpack('B',info[222:223])[0]
-##    print(iRWSstatus)
-##    iRWSstatus = 46
-##    print(iRWSstatus)
-##    print(bin(iRWSstatus))
-##    print(len(bin(iRWSstatus)))
+
+    RWSstatusbinar = bin(iRWSstatus)[2:]
+    RAWSstatusbinar = bin(iRAWSstatus)[2:]
+    HWShubstatusbinar = bin(iHWShubstatus)[2:]
+    DirHubstatusbinar = bin(iDirHubstatus)[2:]
+    TIstatusbinar = bin(iTIstatus)[2:]
+
+    if(len(RWSstatusbinar) < 10):
+        quantity = 10-len(RWSstatusbinar)
+        RWSstatusbinar = ("0" * quantity) + bin(iRWSstatus)[2:]
+
+    if(len(RAWSstatusbinar) < 10):
+        quantity = 10-len(RAWSstatusbinar)
+        RAWSstatusbinar = ("0" * quantity) + bin(iRAWSstatus)[2:]
+
+    if(len(HWShubstatusbinar) < 10):
+        quantity = 10-len(HWShubstatusbinar)
+        HWShubstatusbinar = ("0" * quantity) + bin(iHWShubstatus)[2:]
+
+    if(len(DirHubstatusbinar) < 10):
+        quantity = 10-len(DirHubstatusbinar)
+        DirHubstatusbinar = ("0" * quantity) + bin(iDirHubstatus)[2:]
+
+    if(len(TIstatusbinar) < 10):
+        quantity = 10-len(TIstatusbinar)
+        TIstatusbinar = ("0" * quantity) + bin(iTIstatus)[2:]
+
+##        for data_signals in [tilt, roll, radialWS, verticalWV, recrotWS, turbulenceI, horWShub, windDirHH, verticalWS, horizontalWS, cnr]:
+##            for k in range(10):
+##                data_signals[k].append(data_signals[k][-1]+data_signals[k][-1]*random.uniform(-0.01,0.01))
+
+##    
+##    for i in range(len(RWSstatusbinar)):
+##        if(RWSstatusbinar[i] == "1"):
+##            print(RWSstatusbinar[i])
+##        else:
+##            print("False")
+
     #Unpacking for the slices
     for i in range(10):
         iD[i] = (unpack('h',info[12+(i*2):14+(i*2)])[0])/10
@@ -173,12 +212,39 @@ def update_signals(timestamps,tilt,roll,radialWS,verticalWV,recrotWS,turbulenceI
     tilt.append(iTilt)  #SIMPLE SIGNALS WITH NO ARRAY; JUST ONE SIGNAL IS RECEIVED EVERY CYCLE AND NOT 10
     roll.append(iRoll)  #SIMPLE SIGNALS WITH NO ARRAY; JUST ONE SIGNAL IS RECEIVED EVERY CYCLE AND NOT 10
     for i in range(10):
-        radialWS[i].append(iRWS[i])
+        #Status
+        ##radialWS[i].append(iRWS[i])
+        if(RWSstatusbinar[i] == "1"):
+            radialWS[i].append(iRWS[i])
+        else:
+            radialWS[i].append(None)
+
+        #Status
+        #recrotWS[i].append(iRAWS[i])
+        if(RAWSstatusbinar[i] == "1"):
+            recrotWS[i].append(iRAWS[i])
+        else:
+            recrotWS[i].append(None)
+        #Status
+        #turbulenceI[i].append(iT[i])
+        if(TIstatusbinar[i] == "1"):
+            turbulenceI[i].append(iT[i])
+        else:
+            turbulenceI[i].append(None)
+        #Status
+        #horWShub[i].append(iHWShub[i])
+        if(HWShubstatusbinar[i] == "1"):
+            horWShub[i].append(iHWShub[i])
+        else:
+            horWShub[i].append(None)
+        #Status
+        #windDirHH[i].append(iDirectionHub[i])
+        if(DirHubstatusbinar[i] == "1"):
+            windDirHH[i].append(iDirectionHub[i])
+        else:
+            windDirHH[i].append(None)
+
         verticalWV[i].append(iVeer[i])
-        recrotWS[i].append(iRAWS[i])
-        turbulenceI[i].append(iT[i])
-        horWShub[i].append(iHWShub[i])
-        windDirHH[i].append(iDirectionHub[i])
         verticalWS[i].append(iVsheer[i])
         horizontalWS[i].append(iHsheer[i])
         cnr[i].append(iCNR[i])
